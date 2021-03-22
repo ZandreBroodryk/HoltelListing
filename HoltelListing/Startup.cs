@@ -1,5 +1,7 @@
 using HoltelListing.Configurations;
 using HoltelListing.Data;
+using HoltelListing.IRepository;
+using HoltelListing.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,11 +37,13 @@ namespace HoltelListing
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
-            
 
-            services.AddControllers();
+
+            services.AddControllers().AddNewtonsoftJson(op =>
+            op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
 
             services.AddAutoMapper(typeof(MapperInitializer));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddSwaggerGen(c =>
             {
